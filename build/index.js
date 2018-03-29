@@ -114,34 +114,46 @@ var SimpleStorage = function (_Component) {
 	}
 
 	_createClass(SimpleStorage, [{
-		key: 'componentWillMount',
-		value: function componentWillMount() {
-			this.hydrateStateWithLocalStorage();
-			//this.saveStateToLocalStorage(true);
-			window.addEventListener('beforeunload', this.saveStateToLocalStorage.bind(this));
+		key: 'testForLocalStorage',
+		value: function testForLocalStorage() {
+			var test = 'test';
+			try {
+				localStorage.setItem(test, test);
+				localStorage.removeItem(test);
+				return true;
+			} catch (e) {
+				console.error('react-simple-storage could not access localStorage.');
+				return false;
+			}
 		}
 	}, {
 		key: 'componentDidMount',
 		value: function componentDidMount() {
-			this.hydrateStateWithLocalStorage();
-			//this.saveStateToLocalStorage(true);
-			window.addEventListener('beforeunload', this.saveStateToLocalStorage.bind(this));
+			if (this.testForLocalStorage() === true) {
+				this.hydrateStateWithLocalStorage();
+				window.addEventListener('beforeunload', this.saveStateToLocalStorage.bind(this));
+			}
 		}
 	}, {
 		key: 'componentWillUnmount',
 		value: function componentWillUnmount() {
-			this.saveStateToLocalStorage();
-			window.removeEventListener('beforeunload', this.saveStateToLocalStorage.bind(this));
+			if (this.testForLocalStorage() === true) {
+				this.saveStateToLocalStorage();
+				window.removeEventListener('beforeunload', this.saveStateToLocalStorage.bind(this));
+			}
 		}
 	}, {
 		key: 'hydrateStateWithLocalStorage',
 		value: function hydrateStateWithLocalStorage() {
 			var prefix = '';
-			var parent = this;
+			var parent = {};
 
-			if (this.props) {
-				prefix = this.props.prefix;
+			if (this.props.parent) {
 				parent = this.props.parent;
+				prefix = this.props.prefix ? this.props.prefix : "";
+			} else {
+				console.error('No "parent" prop was provided to react-simple-storage. A parent component\'s context is required in order to access and update the parent component\'s state.\n\t\t\t\nTry the following: <SimpleStorage parent={this} />');
+				return false;
 			}
 
 			// loop through localStorage
@@ -156,11 +168,13 @@ var SimpleStorage = function (_Component) {
 
 					// attempt to parse the stringified localStorage value
 					// and update parent's state with the result
-					try {
-						value = JSON.parse(value);
-						parent.setState(_defineProperty({}, name, value));
-					} catch (e) {
-						parent.setState(_defineProperty({}, name, value));
+					if (name in parent.state) {
+						try {
+							value = JSON.parse(value);
+							parent.setState(_defineProperty({}, name, value));
+						} catch (e) {
+							parent.setState(_defineProperty({}, name, value));
+						}
 					}
 				}
 			}
@@ -174,10 +188,14 @@ var SimpleStorage = function (_Component) {
 			var parent = {};
 			var blacklist = [];
 
-			if (this.props) {
-				prefix = this.props.prefix || "";
+			if (this.props.parent) {
+				prefix = this.props.prefix ? this.props.prefix : "";
 				parent = this.props.parent;
 				blacklist = this.props.blacklist || [];
+			} else {
+				// console.error(`No "parent" prop was provided to react-simple-storage. A parent component's context is required in order to access and update the parent component's state.
+				// \nTry the following: <SimpleStorage parent={this} />`)
+				return false;
 			}
 
 			// loop through all of the parent's state
@@ -201,9 +219,11 @@ var SimpleStorage = function (_Component) {
 
 exports.default = SimpleStorage;
 function clearStorage(prefix) {
-	for (var key in localStorage) {
-		if (key.includes(prefix)) {
-			localStorage.removeItem(key);
+	if (this.testForLocalStorage() === true) {
+		for (var key in localStorage) {
+			if (key.includes(prefix)) {
+				localStorage.removeItem(key);
+			}
 		}
 	}
 }
@@ -212,10 +232,12 @@ function resetParentState(parent) {
 	var initialState = arguments.length > 1 && arguments[1] !== undefined ? arguments[1] : {};
 	var keysToIgnore = arguments.length > 2 && arguments[2] !== undefined ? arguments[2] : [];
 
-	for (var key in initialState) {
-		// reset property if not on the blacklist
-		if (keysToIgnore.indexOf(key) < 0) {
-			parent.setState(_defineProperty({}, key, initialState[key]));
+	if (this.testForLocalStorage() === true) {
+		for (var key in initialState) {
+			// reset property if not on the blacklist
+			if (keysToIgnore.indexOf(key) < 0) {
+				parent.setState(_defineProperty({}, key, initialState[key]));
+			}
 		}
 	}
 }

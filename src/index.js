@@ -6,30 +6,43 @@ export default class SimpleStorage extends Component {
 		//this.saveStateToLocalStorage = this.saveStateToLocalStorage.bind(this)
 	}
 
-	componentWillMount() {
-		this.hydrateStateWithLocalStorage();
-		//this.saveStateToLocalStorage(true);
-		window.addEventListener('beforeunload', this.saveStateToLocalStorage.bind(this));
+	testForLocalStorage(){
+		const test = 'test';
+		try {
+			localStorage.setItem(test, test);
+			localStorage.removeItem(test);
+			return true;
+		} catch(e) {
+			console.error('react-simple-storage could not access localStorage.')
+			return false
+		}
 	}
 
 	componentDidMount() {
-		this.hydrateStateWithLocalStorage();
-		//this.saveStateToLocalStorage(true);
-		window.addEventListener('beforeunload', this.saveStateToLocalStorage.bind(this));
+		if(this.testForLocalStorage() === true) {
+			this.hydrateStateWithLocalStorage();
+			window.addEventListener('beforeunload', this.saveStateToLocalStorage.bind(this));
+		}
 	}
 
 	componentWillUnmount() {
-		this.saveStateToLocalStorage();
-		window.removeEventListener('beforeunload', this.saveStateToLocalStorage.bind(this));
+		if(this.testForLocalStorage() === true) {
+			this.saveStateToLocalStorage();
+			window.removeEventListener('beforeunload', this.saveStateToLocalStorage.bind(this));
+		}
 	}
 
 	hydrateStateWithLocalStorage() {
 		let prefix = '';
-		let parent = this;
+		let parent = {};
 
-		if(this.props){
-			prefix = this.props.prefix;
+		if(this.props.parent){
 			parent = this.props.parent;
+			prefix = this.props.prefix ? this.props.prefix : "";
+		} else {
+			console.error(`No "parent" prop was provided to react-simple-storage. A parent component's context is required in order to access and update the parent component's state.
+			\nTry the following: <SimpleStorage parent={this} />`)
+			return false
 		}
 
 		// loop through localStorage
@@ -44,12 +57,15 @@ export default class SimpleStorage extends Component {
 
 				// attempt to parse the stringified localStorage value
 				// and update parent's state with the result
-				try {
-					value = JSON.parse(value);
-					parent.setState({ [name]: value });
-				} catch (e) {
-					parent.setState({ [name]: value });
+				if(name in parent.state){
+					try {
+						value = JSON.parse(value);
+						parent.setState({ [name]: value });
+					} catch (e) {
+						parent.setState({ [name]: value });
+					}
 				}
+
 			}
 		}
 	}
@@ -59,10 +75,14 @@ export default class SimpleStorage extends Component {
 		let parent = {};
 		let blacklist = [];
 
-		if(this.props) {
-			prefix = this.props.prefix || "";
+		if(this.props.parent) {
+			prefix = this.props.prefix ? this.props.prefix : "";
 			parent = this.props.parent;
 			blacklist = this.props.blacklist || [];
+		} else {
+			// console.error(`No "parent" prop was provided to react-simple-storage. A parent component's context is required in order to access and update the parent component's state.
+			// \nTry the following: <SimpleStorage parent={this} />`)
+			return false
 		}
 
 		// loop through all of the parent's state
@@ -81,18 +101,22 @@ export default class SimpleStorage extends Component {
 }
 
 export function clearStorage(prefix) {
-	for (let key in localStorage) {
-		if (key.includes(prefix)) {
-			localStorage.removeItem(key);
+	if(this.testForLocalStorage() === true) {
+		for (let key in localStorage) {
+			if (key.includes(prefix)) {
+				localStorage.removeItem(key);
+			}
 		}
 	}
 }
 
 export function resetParentState(parent, initialState = {}, keysToIgnore = []) {
-	for (let key in initialState) {
-		// reset property if not on the blacklist
-		if (keysToIgnore.indexOf(key) < 0) {
-			parent.setState({ [key]: initialState[key] });
+	if(this.testForLocalStorage() === true) {
+		for (let key in initialState) {
+			// reset property if not on the blacklist
+			if (keysToIgnore.indexOf(key) < 0) {
+				parent.setState({[key]: initialState[key]});
+			}
 		}
 	}
 }

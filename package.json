@@ -1,6 +1,6 @@
 {
   "name": "react-simple-storage",
-  "version": "1.0.0",
+  "version": "1.0.1",
   "description": "Simple component and helper functions for using localStorage with React.",
   "main": "build/index.js",
   "peerDependencies": {

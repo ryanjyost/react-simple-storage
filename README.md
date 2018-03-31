@@ -21,8 +21,7 @@ npm install react-simple-storage
 
 ### Component
 
-Import and include an instance of react-simple-storage in a component whose state you want to save to [localStorage]
-(https://developer.mozilla.org/en-US/docs/Web/API/Window/localStorage).
+Import and include an instance of react-simple-storage in a component whose state you want to save to [localStorage](https://developer.mozilla.org/en-US/docs/Web/API/Window/localStorage).
 ```javascript
 import React, { Component } from "react";
 import SimpleStorage from "react-simple-storage";
@@ -55,11 +54,11 @@ class ParentComponent extends Component {
 ```
 
 ### Props
-| Name             | Type          | Default   | Description
-| ---------------- |:------------- | ----------|-----:
-| parent           | object        | required  |
-| prefix           | string        | ''        |
-| blacklist        | array         | []        |
+| Name             | Type            |Required? | Default      | Description
+| ---------------- |:--------------- |:-------- | ------------ |-------------
+| parent           | *object*        | Yes      | **none**     | reference to the parent component, i.e. `this`
+| prefix           | *string*        | No       | ""           | prefix added to localStorage keys to avoid name clashes across instances     
+| blacklist        | *array*         | No       | []           | a list of parent component's `state` names/keys to ignore when saving to localStorage   
 
 
 

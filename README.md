@@ -6,7 +6,9 @@ A simple component and helper functions for using localStorage with React.
 
 #### Good use cases for react-simple-storage
 * Persist and experiment with a component's state while developing.
-* 
+* Save form data across user sessions.
+* A simple, quick fake backend for a practice or portfolio project.
+* More I can't think of... 
 
 ## Install
 
@@ -19,8 +21,9 @@ npm install react-simple-storage
 
 ### Component
 
-Import react-simple-storage into a component whose state you want to save to [localStorage](https://developer.mozilla.org/en-US/docs/Web/API/Window/localStorage).
-```
+Import and include an instance of react-simple-storage in a component whose state you want to save to [localStorage]
+(https://developer.mozilla.org/en-US/docs/Web/API/Window/localStorage).
+```javascript
 import React, { Component } from "react";
 import SimpleStorage from "react-simple-storage";
 
@@ -61,6 +64,9 @@ class ParentComponent extends Component {
 
 
 ## Helper Functions
+### `clearStorage(prefix)`
+Clears items in `localStorage` with the given `prefix`, or all items if no `prefix` is given.
+* `prefix: String` - Corresponds to `prefix` prop passed to an instance of the `react-simple-storage` component.
 
 
 

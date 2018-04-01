@@ -26,11 +26,11 @@ Import and include an instance of react-simple-storage in a component whose stat
 import React, { Component } from "react";
 import SimpleStorage from "react-simple-storage";
 
-class ParentComponent extends Component {
+export default class ParentComponent extends Component {
   constructor(props) { 
     super(props)
     this.state = {
-      text: "Initial State",
+      text: "",
     }
   }
 
@@ -41,6 +41,7 @@ class ParentComponent extends Component {
         // include the component somewhere in the parent to save the parent's state in localStorage
         <SimpleStorage parent={this} />
 
+        // the value of this input will be saved in localStorage
         <input
           type="text"
           value={this.state.text}
@@ -64,6 +65,55 @@ class ParentComponent extends Component {
 
 ## Helper Functions
 ### `clearStorage(prefix)`
+Clears items in `localStorage` with the given `prefix`, or all items if no `prefix` is given.
+* `prefix: String | optional` - Corresponds to `prefix` prop passed to an instance of the `react-simple-storage` 
+component.
+
+#### Example
+```javascript
+import React, { Component } from "react";
+import SimpleStorage, { clearStorage } from "react-simple-storage";
+
+export default class ParentComponent extends Component {
+  constructor(props) { 
+    super(props)
+    this.state = {
+      text: "",
+    }
+  }
+
+  render() {
+    return ( 
+      <div>
+      
+        // provide a prefix prop to be able to clear just the localStorage items 
+        // created by this instance of the react-simple-storage component
+        <SimpleStorage parent={this} prefix={"ParentComponent"} />
+
+        <input
+          type="text"
+          value={this.state.text}
+          onChange={e => this.setState({ text: e.target.value })}
+        />
+        
+        // removes only localStorage items related to the ParentComponent
+        <button onClick={() => clearStorage("ParentComponent")}>
+          Clear localStorage for ParentComponent
+        </button>
+        
+         // removes all items from localStorage
+        <button onClick={() => clearStorage()}>
+          Clear all localStorage
+        </button>
+        
+      </div>
+    ) 
+  }
+}
+```
+
+
+### `resetParentState(prefix)`
 Clears items in `localStorage` with the given `prefix`, or all items if no `prefix` is given.
 * `prefix: String` - Corresponds to `prefix` prop passed to an instance of the `react-simple-storage` component.
 

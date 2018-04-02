@@ -113,8 +113,8 @@ export default class ParentComponent extends Component {
 ```
 
 
-### `resetParentState(prefix)`
-Clears items in `localStorage` with the given `prefix`, or all items if no `prefix` is given.
+### `resetParentState(parent, initialState, keysToIgnore)`
+Resets the parent's state to given `initialState`. 
 * `prefix: String` - Corresponds to `prefix` prop passed to an instance of the `react-simple-storage` component.
 
 

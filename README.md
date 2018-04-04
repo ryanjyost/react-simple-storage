@@ -115,10 +115,56 @@ export default class ParentComponent extends Component {
 
 ### `resetParentState(parent, initialState, keysToIgnore)`
 Resets the parent's state to given `initialState`. 
-* `prefix: String` - Corresponds to `prefix` prop passed to an instance of the `react-simple-storage` component.
+* `parent: Object | required` - Reference to the parent component, allowing `react-simple-storage` to access and update 
+the parent component's state. If called within the parent component, simply pass `this`.
+* `initialState: Object | required` - The `state` of the parent component after the function executes.
+* `keysToIgnore: Array | optional` - A list of keys in the parent component's `state` to ignore on `resetParentState
+`. These pieces of that parent's state will NOT be reset.
 
+#### Example
 
+```javascript
+import React, { Component } from "react";
+import SimpleStorage, { resetParentState } from "react-simple-storage";
 
+export default class ParentComponent extends Component {
+  constructor(props) { 
+    super(props)
+    this.state = {
+      text: "Initial Text",
+    }
+    
+    // store the component's initial state to reset it
+    this.initialState = this.state;
+  }
+
+  render() {
+    return ( 
+      <div>
+      
+        <SimpleStorage parent={this} />
+
+        <input
+          type="text"
+          value={this.state.text}
+          onChange={e => this.setState({ text: e.target.value })}
+        />
+        
+        // will set "text" in state to "Initial Text"
+         <button onClick={() => resetParentState(this, this.initialState)}>
+           Reset parent state
+         </button>
+        
+        // ignores "text" on reset, so will have no effect here
+        <button onClick={() => resetParentState(this, this.initialState, ['text'])}>
+          Do NOT reset text
+        </button>
+        
+      </div>
+    ) 
+  }
+}
+```
 
 ## License
 

@@ -12,11 +12,10 @@ A simple component and helper functions for using localStorage with React.
 
 ## Install
 
-[Install via npm.](https://www.npmjs.com/package/react-simple-storage)
+[Install via yarn.](https://www.npmjs.com/package/yarn)
 ```
-npm install react-simple-storage
+yarn add react-simple-storage
 ```
-
 ## Usage
 
 ### Component

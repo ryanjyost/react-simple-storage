@@ -1,6 +1,6 @@
 # React Simple Storage
 
-A simple component and helper functions for using localStorage with React.
+A simple component and helper functions for using web storage with React.
 
 [Check out the demo app and basic example. https://ryanjyost.github.io/react-simple-storage-example-project](https://ryanjyost.github.io/react-simple-storage-example-project/) 
 
@@ -16,11 +16,21 @@ A simple component and helper functions for using localStorage with React.
 ```
 yarn add react-simple-storage
 ```
+#### Using on IE11
+For react-simple-storage to work on IE11, you'll need to use [babel-polyfill](https://babeljs.io/docs/usage/polyfill/).
+```
+yarn add babel-polyfill
+```
+Then import in your project.
+```
+import "babel-polyfill";
+```
+
 ## Usage
 
 ### Component
 
-Import and include an instance of react-simple-storage in a component whose state you want to save to [localStorage](https://developer.mozilla.org/en-US/docs/Web/API/Window/localStorage).
+Import and include an instance of react-simple-storage in a component whose state you want to save to web storage.
 ```javascript
 import React, { Component } from "react";
 import SimpleStorage from "react-simple-storage";
@@ -37,10 +47,10 @@ export default class ParentComponent extends Component {
     return ( 
       <div>
       
-        // include the component somewhere in the parent to save the parent's state in localStorage
+        // include the component somewhere in the parent to save the parent's state in web storage
         <SimpleStorage parent={this} />
 
-        // the value of this input will be saved in localStorage
+        // the value of this input will be saved in web storage
         <input
           type="text"
           value={this.state.text}
@@ -57,14 +67,14 @@ export default class ParentComponent extends Component {
 | Name             | Type            |Required? | Default      | Description
 | ---------------- |:--------------- |:-------- | ------------ |-------------
 | parent           | *object*        | Yes      | **none**     | reference to the parent component, i.e. `this`
-| prefix           | *string*        | No       | ""           | prefix added to localStorage keys to avoid name clashes across instances     
-| blacklist        | *array*         | No       | []           | a list of parent component's `state` names/keys to ignore when saving to localStorage   
+| prefix           | *string*        | No       | ""           | prefix added to storage keys to avoid name clashes across instances     
+| blacklist        | *array*         | No       | []           | a list of parent component's `state` names/keys to ignore when saving to storage   
 
 
 
 ## Helper Functions
 ### `clearStorage(prefix)`
-Clears items in `localStorage` with the given `prefix`, or all items if no `prefix` is given.
+Clears items in `storage` with the given `prefix`, or all items if no `prefix` is given.
 * `prefix: String | optional` - Corresponds to `prefix` prop passed to an instance of the `react-simple-storage` 
 component.
 
@@ -85,7 +95,7 @@ export default class ParentComponent extends Component {
     return ( 
       <div>
       
-        // provide a prefix prop to be able to clear just the localStorage items 
+        // provide a prefix prop to be able to clear just the storage items 
         // created by this instance of the react-simple-storage component
         <SimpleStorage parent={this} prefix={"ParentComponent"} />
 
@@ -95,14 +105,14 @@ export default class ParentComponent extends Component {
           onChange={e => this.setState({ text: e.target.value })}
         />
         
-        // removes only localStorage items related to the ParentComponent
+        // removes only storage items related to the ParentComponent
         <button onClick={() => clearStorage("ParentComponent")}>
-          Clear localStorage for ParentComponent
+          Clear storage for ParentComponent
         </button>
         
-         // removes all items from localStorage
+         // removes all items from storage
         <button onClick={() => clearStorage()}>
-          Clear all localStorage
+          Clear all storage
         </button>
         
       </div>
@@ -164,6 +174,9 @@ export default class ParentComponent extends Component {
   }
 }
 ```
+
+## Built with
+* [store.js](https://github.com/marcuswestin/store.js) - Cross-browser storage for all use cases, used across the web.
 
 ## License
 

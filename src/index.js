@@ -8,7 +8,6 @@ export default class SimpleStorage extends Component {
   }
 
   componentDidMount() {
-    console.log("store", store);
     if (this.testStorage() === true) {
       this.hydrateStateWithStorage();
       window.addEventListener(
@@ -35,7 +34,7 @@ export default class SimpleStorage extends Component {
       store.remove(test);
       return true;
     } catch (e) {
-      console.error("react-simple-storage could not access localStorage.");
+      console.error("react-simple-storage could not access web storage.");
       return false;
     }
   }
@@ -60,7 +59,7 @@ export default class SimpleStorage extends Component {
         // remove the parent-specific prefix to get original key from parent's state
         let name = key.slice(prefix.length + 1);
 
-        // attempt to parse the stringified localStorage value
+        // attempt to parse the stringified web storage value
         // and update parent's state with the result
         let parsedValue;
         if (name in parent.state) {
@@ -94,11 +93,8 @@ export default class SimpleStorage extends Component {
     for (let key in parent.state) {
       // save item to storage if not on the blacklist
       let prefixWithKey = `${prefix}_${key}`;
-      if (
-        blacklist.indexOf(key) < 0
-        // (prefixWithKey in localStorage || allowNewKey)
-      ) {
-        store.set(`${prefix}_${key}`, parent.state[key]);
+      if (blacklist.indexOf(key) < 0 && allowNewKey) {
+        store.set(prefixWithKey, parent.state[key]);
       }
     }
   }

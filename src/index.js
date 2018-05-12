@@ -105,7 +105,6 @@ export default class SimpleStorage extends Component {
 }
 
 function _testStorage() {
-  // console.log("testing local storage", store);
   const test = "test";
   try {
     store.set(test, test);

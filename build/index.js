@@ -259,7 +259,6 @@ var SimpleStorage = function (_Component) {
   _createClass(SimpleStorage, [{
     key: "componentDidMount",
     value: function componentDidMount() {
-      console.log("store", _store2.default);
       if (this.testStorage() === true) {
         this.hydrateStateWithStorage();
         window.addEventListener("beforeunload", this.saveStateToStorage.bind(this));
@@ -282,7 +281,7 @@ var SimpleStorage = function (_Component) {
         _store2.default.remove(test);
         return true;
       } catch (e) {
-        console.error("react-simple-storage could not access localStorage.");
+        console.error("react-simple-storage could not access web storage.");
         return false;
       }
     }
@@ -307,7 +306,7 @@ var SimpleStorage = function (_Component) {
           // remove the parent-specific prefix to get original key from parent's state
           var name = key.slice(prefix.length + 1);
 
-          // attempt to parse the stringified localStorage value
+          // attempt to parse the stringified web storage value
           // and update parent's state with the result
           var parsedValue = void 0;
           if (name in parent.state) {
@@ -343,11 +342,9 @@ var SimpleStorage = function (_Component) {
       for (var key in parent.state) {
         // save item to storage if not on the blacklist
         var prefixWithKey = prefix + "_" + key;
-        if (blacklist.indexOf(key) < 0
-        // (prefixWithKey in localStorage || allowNewKey)
-        ) {
-            _store2.default.set(prefix + "_" + key, parent.state[key]);
-          }
+        if (blacklist.indexOf(key) < 0 && allowNewKey) {
+          _store2.default.set(prefixWithKey, parent.state[key]);
+        }
       }
     }
   }, {
@@ -364,7 +361,6 @@ exports.default = SimpleStorage;
 
 
 function _testStorage() {
-  // console.log("testing local storage", store);
   var test = "test";
   try {
     _store2.default.set(test, test);

@@ -2,21 +2,27 @@
   "name": "react-simple-storage",
   "version": "1.0.2",
   "description": "Simple component and helper functions for using localStorage with React.",
-  "keywords": ["react, localStorage", "storage"],
+  "keywords": [
+    "react, localStorage",
+    "storage"
+  ],
   "main": "build/index.js",
   "homepage": "https://ryanjyost.github.io/react-simple-storage-example-project/",
-  "bugs": {"email": "ryanjyost@gmail.com" },
+  "bugs": {
+    "email": "ryanjyost@gmail.com"
+  },
   "license": "MIT",
   "peerDependencies": {
     "react": "^15.5.4"
   },
   "dependencies": {
     "react": "^15.5.4",
+    "store": "^2.0.12",
     "webpack": "^2.6.1"
   },
-  "repository" : {
-    "type" : "git",
-    "url" : "https://github.com/ryanjyost/react-simple-storage"
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/ryanjyost/react-simple-storage"
   },
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1",

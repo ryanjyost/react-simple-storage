@@ -61,6 +61,7 @@ export default class SimpleStorage extends Component {
 
         // attempt to parse the stringified web storage value
         // and update parent's state with the result
+        // store.js handles parsing, but can't (shouldn't...) hurt to "try"
         let parsedValue;
         if (name in parent.state) {
           try {

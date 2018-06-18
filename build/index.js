@@ -311,8 +311,8 @@ var SimpleStorage = function (_Component) {
           var parsedValue = void 0;
           if (name in parent.state) {
             try {
-              // parsedValue = JSON.parse(parsedValue);
-              parent.setState(_defineProperty({}, name, value));
+              parsedValue = JSON.parse(value);
+              parent.setState(_defineProperty({}, name, parsedValue));
             } catch (e) {
               parent.setState(_defineProperty({}, name, value));
             }

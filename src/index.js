@@ -64,8 +64,8 @@ export default class SimpleStorage extends Component {
         let parsedValue;
         if (name in parent.state) {
           try {
-            // parsedValue = JSON.parse(parsedValue);
-            parent.setState({ [name]: value });
+            parsedValue = JSON.parse(value);
+            parent.setState({ [name]: parsedValue });
           } catch (e) {
             parent.setState({ [name]: value });
           }

@@ -2,7 +2,9 @@
 
 A simple component and helper functions for using web storage with React.
 
-[Check out the demo app and basic example. https://ryanjyost.github.io/react-simple-storage-example-project](https://ryanjyost.github.io/react-simple-storage-example-project/) 
+[Check out the demo app and basic example. https://ryanjyost.github.io/react-simple-storage-example-project](https://ryanjyost.github.io/react-simple-storage-example-project/)
+
+You may also want to check out my related Hacker Noon article, [How to take advantage of Local Storage in your React projects](https://hackernoon.com/how-to-take-advantage-of-local-storage-in-your-react-projects-a895f2b2d3f2), for some context and logic behind this project.
 
 #### Good use cases for react-simple-storage
 * Persist and experiment with a component's state while developing.

@@ -4,7 +4,22 @@ import store from "store";
 export default class SimpleStorage extends Component {
   constructor(props) {
     super(props);
+    this.state = {
+      didHydrate: false,
+			firedHydrateCallback: false
+    };
     this.testStorage = _testStorage.bind(this);
+  }
+
+	static getDerivedStateFromProps(props, state) {
+		// callback function that fires after the parent's state has been hydrated with storage items
+		if('onParentStateHydrated' in props && state.didHydrate && !state.firedHydrateCallback){
+			props.onParentStateHydrated();
+      return {
+        ...state, ...{firedHydrateCallback: true}
+      }
+    }
+    return state;
   }
 
   componentDidMount() {
@@ -14,6 +29,7 @@ export default class SimpleStorage extends Component {
         "beforeunload",
         this.saveStateToStorage.bind(this)
       );
+
     }
   }
 
@@ -73,6 +89,8 @@ export default class SimpleStorage extends Component {
         }
       }
     });
+
+    this.setState({didHydrate: true})
   }
 
   saveStateToStorage(allowNewKey = true) {

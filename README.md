@@ -70,7 +70,9 @@ export default class ParentComponent extends Component {
 | ---------------- |:--------------- |:-------- | ------------ |-------------
 | parent           | *object*        | Yes      | **none**     | reference to the parent component, i.e. `this`
 | prefix           | *string*        | No       | ""           | prefix added to storage keys to avoid name clashes across instances     
-| blacklist        | *array*         | No       | []           | a list of parent component's `state` names/keys to ignore when saving to storage   
+| blacklist        | *array*         | No       | []           | a list of parent component's `state` names/keys to ignore when saving to storage
+| onParentStateHydrated        | *func*         | No       | none           | fires after the parent component's `state` has been updated with storage items. Basically a callback for working with the parent component's `state` once updated with storage.
+
 
 
 

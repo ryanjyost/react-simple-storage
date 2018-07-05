@@ -1,6 +1,6 @@
 {
   "name": "react-simple-storage",
-  "version": "1.1.1",
+  "version": "1.2.1",
   "description": "Simple component and helper functions for using web storage with React.",
   "keywords": [
     "react, localStorage",

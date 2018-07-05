@@ -221,6 +221,8 @@ Object.defineProperty(exports, "__esModule", {
   value: true
 });
 
+var _extends = Object.assign || function (target) { for (var i = 1; i < arguments.length; i++) { var source = arguments[i]; for (var key in source) { if (Object.prototype.hasOwnProperty.call(source, key)) { target[key] = source[key]; } } } return target; };
+
 var _createClass = function () { function defineProperties(target, props) { for (var i = 0; i < props.length; i++) { var descriptor = props[i]; descriptor.enumerable = descriptor.enumerable || false; descriptor.configurable = true; if ("value" in descriptor) descriptor.writable = true; Object.defineProperty(target, descriptor.key, descriptor); } } return function (Constructor, protoProps, staticProps) { if (protoProps) defineProperties(Constructor.prototype, protoProps); if (staticProps) defineProperties(Constructor, staticProps); return Constructor; }; }();
 
 exports.clearStorage = clearStorage;
@@ -252,6 +254,10 @@ var SimpleStorage = function (_Component) {
 
     var _this = _possibleConstructorReturn(this, (SimpleStorage.__proto__ || Object.getPrototypeOf(SimpleStorage)).call(this, props));
 
+    _this.state = {
+      didHydrate: false,
+      firedHydrateCallback: false
+    };
     _this.testStorage = _testStorage.bind(_this);
     return _this;
   }
@@ -308,6 +314,7 @@ var SimpleStorage = function (_Component) {
 
           // attempt to parse the stringified web storage value
           // and update parent's state with the result
+          // store.js handles parsing, but can't (shouldn't...) hurt to "try"
           var parsedValue = void 0;
           if (name in parent.state) {
             try {
@@ -319,6 +326,8 @@ var SimpleStorage = function (_Component) {
           }
         }
       });
+
+      this.setState({ didHydrate: true });
     }
   }, {
     key: "saveStateToStorage",
@@ -351,6 +360,16 @@ var SimpleStorage = function (_Component) {
     key: "render",
     value: function render() {
       return null;
+    }
+  }], [{
+    key: "getDerivedStateFromProps",
+    value: function getDerivedStateFromProps(props, state) {
+      // callback function that fires after the parent's state has been hydrated with storage items
+      if ('onParentStateHydrated' in props && state.didHydrate && !state.firedHydrateCallback) {
+        props.onParentStateHydrated();
+        return _extends({}, state, { firedHydrateCallback: true });
+      }
+      return state;
     }
   }]);
 

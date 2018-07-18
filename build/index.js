@@ -267,7 +267,7 @@ var SimpleStorage = function (_Component) {
     value: function componentDidMount() {
       if (this.testStorage() === true) {
         this.hydrateStateWithStorage();
-        window.addEventListener("beforeunload", this.saveStateToStorage.bind(this));
+        window.addEventListener("pagehide", this.saveStateToStorage.bind(this));
       }
     }
   }, {
@@ -275,7 +275,7 @@ var SimpleStorage = function (_Component) {
     value: function componentWillUnmount() {
       if (this.testStorage() === true) {
         this.saveStateToStorage();
-        window.removeEventListener("beforeunload", this.saveStateToStorage.bind(this));
+        window.removeEventListener("pagehide", this.saveStateToStorage.bind(this));
       }
     }
   }, {

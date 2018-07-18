@@ -26,10 +26,9 @@ export default class SimpleStorage extends Component {
     if (this.testStorage() === true) {
       this.hydrateStateWithStorage();
       window.addEventListener(
-        "beforeunload",
+        "pagehide",
         this.saveStateToStorage.bind(this)
       );
-
     }
   }
 
@@ -37,7 +36,7 @@ export default class SimpleStorage extends Component {
     if (this.testStorage() === true) {
       this.saveStateToStorage();
       window.removeEventListener(
-        "beforeunload",
+        "pagehide",
         this.saveStateToStorage.bind(this)
       );
     }

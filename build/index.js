@@ -319,7 +319,7 @@ var SimpleStorage = function (_Component) {
           if (name in parent.state) {
             try {
               parsedValue = JSON.parse(value);
-              parent.setState(_defineProperty({}, name, parsedValue));
+              parent.setState(_defineProperty({}, name, _decode_data(parsedValue)));
             } catch (e) {
               parent.setState(_defineProperty({}, name, value));
             }
@@ -352,7 +352,7 @@ var SimpleStorage = function (_Component) {
         // save item to storage if not on the blacklist
         var prefixWithKey = prefix + "_" + key;
         if (blacklist.indexOf(key) < 0 && allowNewKey) {
-          _store2.default.set(prefixWithKey, parent.state[key]);
+          _store2.default.set(prefixWithKey, _encode_data(parent.state[key]));
         }
       }
     }
@@ -378,6 +378,22 @@ var SimpleStorage = function (_Component) {
 
 exports.default = SimpleStorage;
 
+
+function _encode_data(data) {
+  var type = data.constructor.name;
+  if (data instanceof Map) {
+    data = Array.from(data.entries());
+  }
+  return { type: type, data: data };
+}
+
+function _decode_data(data) {
+  var value = data.value;
+  if (data.value === "Map") {
+    value = new Map(value);
+  }
+  return value;
+}
 
 function _testStorage() {
   var test = "test";

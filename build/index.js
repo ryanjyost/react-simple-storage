@@ -315,14 +315,8 @@ var SimpleStorage = function (_Component) {
           // attempt to parse the stringified web storage value
           // and update parent's state with the result
           // store.js handles parsing, but can't (shouldn't...) hurt to "try"
-          var parsedValue = void 0;
           if (name in parent.state) {
-            try {
-              parsedValue = JSON.parse(value);
-              parent.setState(_defineProperty({}, name, _decode_data(parsedValue)));
-            } catch (e) {
-              parent.setState(_defineProperty({}, name, value));
-            }
+            parent.setState(_defineProperty({}, name, _decode_data(value)));
           }
         }
       });
@@ -387,12 +381,12 @@ function _encode_data(data) {
   return { type: type, data: data };
 }
 
-function _decode_data(data) {
-  var value = data.value;
-  if (data.value === "Map") {
-    value = new Map(value);
+function _decode_data(entry) {
+  var data = entry.data;
+  if (entry.type === "Map") {
+    data = new Map(data);
   }
-  return value;
+  return data;
 }
 
 function _testStorage() {

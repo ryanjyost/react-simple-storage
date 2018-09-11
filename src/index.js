@@ -1,5 +1,7 @@
 import React, { Component } from "react";
 import store from "store";
+var moreTypes = require("store.js-moretypes")
+store.addPlugin(moreTypes)
 
 export default class SimpleStorage extends Component {
   constructor(props) {

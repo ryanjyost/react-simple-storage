@@ -1,6 +1,6 @@
 import React, { Component } from "react";
 import store from "store";
-var moreTypes = require("store.js-moretypes")
+import moreTypes from "store.js-moretypes"
 store.addPlugin(moreTypes)
 
 export default class SimpleStorage extends Component {
@@ -80,7 +80,7 @@ export default class SimpleStorage extends Component {
         // and update parent's state with the result
         // store.js handles parsing, but can't (shouldn't...) hurt to "try"
         if (name in parent.state) {
-            parent.setState({ [name]: _decode_data(value) });
+            parent.setState({ [name]: value });
         }
       }
     });
@@ -108,7 +108,7 @@ export default class SimpleStorage extends Component {
       // save item to storage if not on the blacklist
       let prefixWithKey = `${prefix}_${key}`;
       if (blacklist.indexOf(key) < 0 && allowNewKey) {
-        store.set(prefixWithKey, _encode_data(parent.state[key]));
+        store.set(prefixWithKey, parent.state[key]);
       }
     }
   }
@@ -116,22 +116,6 @@ export default class SimpleStorage extends Component {
   render() {
     return null;
   }
-}
-
-function _encode_data(data) {
-  var type = data.constructor.name;
-  if (data instanceof Map) {
-    data = Array.from(data.entries());
-  }
-  return {type: type, data: data}
-}
-
-function _decode_data(entry) {
-  var data = entry.data;
-  if (entry.type === "Map") {
-    data = new Map(data);
-  }
-  return data;
 }
 
 function _testStorage() {

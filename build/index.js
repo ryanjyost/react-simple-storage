@@ -315,14 +315,8 @@ var SimpleStorage = function (_Component) {
           // attempt to parse the stringified web storage value
           // and update parent's state with the result
           // store.js handles parsing, but can't (shouldn't...) hurt to "try"
-          var parsedValue = void 0;
           if (name in parent.state) {
-            try {
-              parsedValue = JSON.parse(value);
-              parent.setState(_defineProperty({}, name, parsedValue));
-            } catch (e) {
-              parent.setState(_defineProperty({}, name, value));
-            }
+            parent.setState(_defineProperty({}, name, _decode_data(value)));
           }
         }
       });
@@ -352,7 +346,7 @@ var SimpleStorage = function (_Component) {
         // save item to storage if not on the blacklist
         var prefixWithKey = prefix + "_" + key;
         if (blacklist.indexOf(key) < 0 && allowNewKey) {
-          _store2.default.set(prefixWithKey, parent.state[key]);
+          _store2.default.set(prefixWithKey, _encode_data(parent.state[key]));
         }
       }
     }
@@ -378,6 +372,22 @@ var SimpleStorage = function (_Component) {
 
 exports.default = SimpleStorage;
 
+
+function _encode_data(data) {
+  var type = data.constructor.name;
+  if (data instanceof Map) {
+    data = Array.from(data.entries());
+  }
+  return { type: type, data: data };
+}
+
+function _decode_data(entry) {
+  var data = entry.data;
+  if (entry.type === "Map") {
+    data = new Map(data);
+  }
+  return data;
+}
 
 function _testStorage() {
   var test = "test";

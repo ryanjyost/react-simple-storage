@@ -19,6 +19,7 @@
   "dependencies": {
     "react": "^15.5.4",
     "store": "^2.0.12",
+    "store.js-moretypes": "^1.0.4",
     "webpack": "^2.6.1"
   },
   "repository": {

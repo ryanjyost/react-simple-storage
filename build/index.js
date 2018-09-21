@@ -64,7 +64,7 @@ module.exports =
 /******/ 	__webpack_require__.p = "";
 /******/
 /******/ 	// Load entry module and return exports
-/******/ 	return __webpack_require__(__webpack_require__.s = 4);
+/******/ 	return __webpack_require__(__webpack_require__.s = 3);
 /******/ })
 /************************************************************************/
 /******/ ([
@@ -190,98 +190,28 @@ function isObject(val) {
 	return val && {}.toString.call(val) === '[object Object]'
 }
 
-/* WEBPACK VAR INJECTION */}.call(exports, __webpack_require__(15)))
+/* WEBPACK VAR INJECTION */}.call(exports, __webpack_require__(14)))
 
 /***/ }),
 /* 1 */
-/***/ (function(module, exports) {
-
-var namespace = "more_types_type";
-
-module.exports = moreTypes;
-
-function moreTypes() {
-  var types = {
-      Map: {
-        replacer : function(val) { return Array.from(val); },
-        reviver  : function(val) { return new Map(val); }
-      },
-      Set: {
-        replacer : function(val) { return Array.from(val); },
-        reviver  : function(val) { return new Set(val); }
-      }
-  };
-
-  return {
-    add_types: more_types_add_types,
-    _serialize: more_types_serialize,
-    _deserialize: more_types_deserialize
-  };
-
-  function more_types_add_types(super_fn, userTypes) {
-    for (var type in userTypes) {
-      types[type] = userTypes[type];
-    }
-  }
-  
-  function _replacer(key, value) {
-    var type = value.constructor.name;
-    if (type in types && 'replacer' in types[type]) {
-      value = {[namespace]: type, data: types[type].replacer(value)};
-    }
-    return value;
-  }
-  
-  function more_types_serialize(super_fn, obj) {
-    return JSON.stringify(obj, _replacer);
-  }
-  
-  function _reviver(key, value) {
-    var type = value[namespace];
-    if (type !== undefined && type in types) {
-      if ('reviver' in types[type])    
-        value = types[type].reviver(value['data']);
-      else
-        value = value['data']
-    }
-    return value;
-  }
-  
-  function more_types_deserialize(super_fn, strVal, defaultVal) {
-    if (!strVal) { return defaultVal }
-    // It is possible that a raw string value has been previously stored
-    // in a storage without using store.js, meaning it will be a raw
-    // string value instead of a JSON serialized string. By defaulting
-    // to the raw string value in case of a JSON parse error, we allow
-    // for past stored values to be forwards-compatible with store.js
-    var val = '';
-    try { val = JSON.parse(strVal, _reviver) }
-    catch(e) { val = strVal }
-
-    return (val !== undefined ? val : defaultVal);
-  }
-}
-
-/***/ }),
-/* 2 */
 /***/ (function(module, exports, __webpack_require__) {
 
-var engine = __webpack_require__(7)
+var engine = __webpack_require__(6)
 
-var storages = __webpack_require__(8)
-var plugins = [__webpack_require__(5)]
+var storages = __webpack_require__(7)
+var plugins = [__webpack_require__(4)]
 
 module.exports = engine.createStore(storages, plugins)
 
 
 /***/ }),
-/* 3 */
+/* 2 */
 /***/ (function(module, exports) {
 
 module.exports = require("react");
 
 /***/ }),
-/* 4 */
+/* 3 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -298,17 +228,13 @@ var _createClass = function () { function defineProperties(target, props) { for 
 exports.clearStorage = clearStorage;
 exports.resetParentState = resetParentState;
 
-var _react = __webpack_require__(3);
+var _react = __webpack_require__(2);
 
 var _react2 = _interopRequireDefault(_react);
 
-var _store = __webpack_require__(2);
+var _store = __webpack_require__(1);
 
 var _store2 = _interopRequireDefault(_store);
-
-var _store3 = __webpack_require__(1);
-
-var _store4 = _interopRequireDefault(_store3);
 
 function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
 
@@ -319,8 +245,6 @@ function _classCallCheck(instance, Constructor) { if (!(instance instanceof Cons
 function _possibleConstructorReturn(self, call) { if (!self) { throw new ReferenceError("this hasn't been initialised - super() hasn't been called"); } return call && (typeof call === "object" || typeof call === "function") ? call : self; }
 
 function _inherits(subClass, superClass) { if (typeof superClass !== "function" && superClass !== null) { throw new TypeError("Super expression must either be null or a function, not " + typeof superClass); } subClass.prototype = Object.create(superClass && superClass.prototype, { constructor: { value: subClass, enumerable: false, writable: true, configurable: true } }); if (superClass) Object.setPrototypeOf ? Object.setPrototypeOf(subClass, superClass) : subClass.__proto__ = superClass; }
-
-_store2.default.addPlugin(_store4.default);
 
 var SimpleStorage = function (_Component) {
   _inherits(SimpleStorage, _Component);
@@ -341,6 +265,7 @@ var SimpleStorage = function (_Component) {
   _createClass(SimpleStorage, [{
     key: "componentDidMount",
     value: function componentDidMount() {
+      console.log('test');
       if (this.testStorage() === true) {
         this.hydrateStateWithStorage();
         window.addEventListener("pagehide", this.saveStateToStorage.bind(this));
@@ -390,8 +315,14 @@ var SimpleStorage = function (_Component) {
 
           // update parent's state with the result
           // store.js handles parsing
+          var parsedValue = void 0;
           if (name in parent.state) {
-            parent.setState(_defineProperty({}, name, value));
+            try {
+              parsedValue = JSON.parse(value);
+              parent.setState(_defineProperty({}, name, parsedValue));
+            } catch (e) {
+              parent.setState(_defineProperty({}, name, value));
+            }
           }
         }
       });
@@ -485,19 +416,19 @@ function resetParentState(parent) {
 }
 
 /***/ }),
-/* 5 */
+/* 4 */
 /***/ (function(module, exports, __webpack_require__) {
 
 module.exports = json2Plugin
 
 function json2Plugin() {
-	__webpack_require__(6)
+	__webpack_require__(5)
 	return {}
 }
 
 
 /***/ }),
-/* 6 */
+/* 5 */
 /***/ (function(module, exports) {
 
 /* eslint-disable */
@@ -1010,7 +941,7 @@ if (typeof JSON !== "object") {
 }());
 
 /***/ }),
-/* 7 */
+/* 6 */
 /***/ (function(module, exports, __webpack_require__) {
 
 var util = __webpack_require__(0)
@@ -1253,22 +1184,22 @@ function createStore(storages, plugins, namespace) {
 
 
 /***/ }),
-/* 8 */
+/* 7 */
 /***/ (function(module, exports, __webpack_require__) {
 
 module.exports = [
 	// Listed in order of usage preference
-	__webpack_require__(10),
-	__webpack_require__(12),
-	__webpack_require__(13),
 	__webpack_require__(9),
-	__webpack_require__(14),
-	__webpack_require__(11)
+	__webpack_require__(11),
+	__webpack_require__(12),
+	__webpack_require__(8),
+	__webpack_require__(13),
+	__webpack_require__(10)
 ]
 
 
 /***/ }),
-/* 9 */
+/* 8 */
 /***/ (function(module, exports, __webpack_require__) {
 
 // cookieStorage is useful Safari private browser mode, where localStorage
@@ -1335,7 +1266,7 @@ function _has(key) {
 
 
 /***/ }),
-/* 10 */
+/* 9 */
 /***/ (function(module, exports, __webpack_require__) {
 
 var util = __webpack_require__(0)
@@ -1379,7 +1310,7 @@ function clearAll() {
 
 
 /***/ }),
-/* 11 */
+/* 10 */
 /***/ (function(module, exports) {
 
 // memoryStorage is a useful last fallback to ensure that the store
@@ -1424,7 +1355,7 @@ function clearAll(key) {
 
 
 /***/ }),
-/* 12 */
+/* 11 */
 /***/ (function(module, exports, __webpack_require__) {
 
 // oldFF-globalStorage provides storage for Firefox
@@ -1472,7 +1403,7 @@ function clearAll() {
 
 
 /***/ }),
-/* 13 */
+/* 12 */
 /***/ (function(module, exports, __webpack_require__) {
 
 // oldIE-userDataStorage provides storage for Internet Explorer
@@ -1605,7 +1536,7 @@ function _makeIEStorageElFunction() {
 
 
 /***/ }),
-/* 14 */
+/* 13 */
 /***/ (function(module, exports, __webpack_require__) {
 
 var util = __webpack_require__(0)
@@ -1649,7 +1580,7 @@ function clearAll() {
 
 
 /***/ }),
-/* 15 */
+/* 14 */
 /***/ (function(module, exports) {
 
 var g;

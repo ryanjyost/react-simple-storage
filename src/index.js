@@ -1,7 +1,5 @@
 import React, { Component } from "react";
 import store from "store";
-import moreTypes from "store.js-moretypes"
-store.addPlugin(moreTypes)
 
 export default class SimpleStorage extends Component {
   constructor(props) {
@@ -78,9 +76,15 @@ export default class SimpleStorage extends Component {
 
         // update parent's state with the result
         // store.js handles parsing
-        if (name in parent.state) {
-            parent.setState({ [name]: value });
-        }
+				let parsedValue;
+				if (name in parent.state) {
+					try {
+						parsedValue = JSON.parse(value);
+						parent.setState({ [name]: parsedValue });
+					} catch (e) {
+						parent.setState({ [name]: value });
+					}
+				}
       }
     });
 

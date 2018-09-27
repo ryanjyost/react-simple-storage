@@ -265,7 +265,6 @@ var SimpleStorage = function (_Component) {
   _createClass(SimpleStorage, [{
     key: "componentDidMount",
     value: function componentDidMount() {
-      console.log('test');
       if (this.testStorage() === true) {
         this.hydrateStateWithStorage();
         window.addEventListener("pagehide", this.saveStateToStorage.bind(this));

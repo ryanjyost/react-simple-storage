@@ -135,11 +135,15 @@ function _testStorage() {
 
 export function clearStorage(prefix) {
   if (_testStorage() === true) {
-    store.each((value, key) => {
-      if (key.includes(prefix)) {
-        store.remove(key);
-      }
-    });
+    if (prefix) {
+      store.each((value, key) => {
+        if (key.includes(prefix)) {
+          store.remove(key);
+        }
+      });
+    } else {
+      store.clearAll();
+    }
   }
 }
 

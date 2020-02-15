@@ -314,14 +314,8 @@ var SimpleStorage = function (_Component) {
 
           // update parent's state with the result
           // store.js handles parsing
-          var parsedValue = void 0;
           if (name in parent.state) {
-            try {
-              parsedValue = JSON.parse(value);
-              parent.setState(_defineProperty({}, name, parsedValue));
-            } catch (e) {
-              parent.setState(_defineProperty({}, name, value));
-            }
+            parent.setState(_defineProperty({}, name, value));
           }
         }
       });
@@ -332,6 +326,11 @@ var SimpleStorage = function (_Component) {
     key: "saveStateToStorage",
     value: function saveStateToStorage() {
       var allowNewKey = arguments.length > 0 && arguments[0] !== undefined ? arguments[0] : true;
+
+      if (_store2.default.get("rss_cleared")) {
+        _store2.default.set("rss_cleared", false);
+        return;
+      }
 
       var prefix = "";
       var parent = {};
@@ -397,6 +396,8 @@ function clearStorage(prefix) {
         _store2.default.remove(key);
       }
     });
+
+    _store2.default.set("rss_cleared", true);
   }
 }
 

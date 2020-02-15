@@ -76,14 +76,8 @@ export default class SimpleStorage extends Component {
 
         // update parent's state with the result
         // store.js handles parsing
-				let parsedValue;
 				if (name in parent.state) {
-					try {
-						parsedValue = JSON.parse(value);
-						parent.setState({ [name]: parsedValue });
-					} catch (e) {
-						parent.setState({ [name]: value });
-					}
+				  parent.setState({ [name]: value });
 				}
       }
     });
@@ -92,6 +86,11 @@ export default class SimpleStorage extends Component {
   }
 
   saveStateToStorage(allowNewKey = true) {
+    if(store.get("rss_cleared")){
+      store.set("rss_cleared", false);
+      return
+    }
+
     let prefix = "";
     let parent = {};
     let blacklist = [];
@@ -105,6 +104,7 @@ export default class SimpleStorage extends Component {
       \nTry the following: <SimpleStorage parent={this} />`);
       return false;
     }
+
 
     // loop through all of the parent's state
     for (let key in parent.state) {
@@ -140,6 +140,8 @@ export function clearStorage(prefix) {
         store.remove(key);
       }
     });
+
+    store.set("rss_cleared", true);
   }
 }
 

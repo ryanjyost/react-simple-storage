@@ -1,23 +1,51 @@
-import React, { Component } from "react";
+import { Component } from "react";
+import PropTypes from "prop-types";
 import store from "store";
+
+/**
+ * Checks if parent is a React Component
+ * @param {Object} parent
+ * @returns {boolean}
+ */
+const checkStatefulParent = (parent) => parent instanceof Component;
+
+/**
+ * @typedef {Array} HookDeclaration
+ * @property {*} HookDeclaration[0] hook value
+ * @property {function} HookDeclaration[1] hook value setter
+ * @example [myValue, setMyValue]
+ */
+
+/**
+ * A mapping of keys that will be stored in local storage to their
+ * corresponding HookDeclaration {@link HookDeclaration}
+ * @typedef {Object.<string, HookDeclaration>} HooksParent
+ * @example { myValue: [myValue, setMyValue], ... }
+ */
 
 export default class SimpleStorage extends Component {
   constructor(props) {
     super(props);
     this.state = {
       didHydrate: false,
-			firedHydrateCallback: false
+      firedHydrateCallback: false,
     };
     this.testStorage = _testStorage.bind(this);
   }
 
-	static getDerivedStateFromProps(props, state) {
-		// callback function that fires after the parent's state has been hydrated with storage items
-		if('onParentStateHydrated' in props && state.didHydrate && !state.firedHydrateCallback){
-			props.onParentStateHydrated();
+  static getDerivedStateFromProps(props, state) {
+    // callback function that fires after the parent's state has been
+    // hydrated with storage items
+    if (
+      "onParentStateHydrated" in props &&
+      state.didHydrate &&
+      !state.firedHydrateCallback
+    ) {
+      props.onParentStateHydrated();
       return {
-        ...state, ...{firedHydrateCallback: true}
-      }
+        ...state,
+        ...{ firedHydrateCallback: true },
+      };
     }
     return state;
   }
@@ -25,10 +53,7 @@ export default class SimpleStorage extends Component {
   componentDidMount() {
     if (this.testStorage() === true) {
       this.hydrateStateWithStorage();
-      window.addEventListener(
-        "pagehide",
-        this.saveStateToStorage.bind(this)
-      );
+      window.addEventListener("pagehide", this.saveStateToStorage.bind(this));
     }
   }
 
@@ -67,28 +92,35 @@ export default class SimpleStorage extends Component {
       return false;
     }
 
+    const isStatefulParent = checkStatefulParent(parent);
+    const parentObj = isStatefulParent ? parent.state : parent;
+
     // loop through storage
     store.each((value, key) => {
       // if the storage item is in the current parent's state
       if (key.includes(prefix)) {
         // remove the parent-specific prefix to get original key from parent's state
-        let name = key.slice(prefix.length + 1);
+        const name = key.slice(prefix.length + 1);
 
         // update parent's state with the result
         // store.js handles parsing
-				if (name in parent.state) {
-				  parent.setState({ [name]: value });
-				}
+        if (isStatefulParent && name in parentObj) {
+          parent.setState({ [name]: value });
+        } else if (!isStatefulParent && name in parentObj) {
+          // handle hooks hydration
+          const [, setValue] = parent[name];
+          setValue(value);
+        }
       }
     });
 
-    this.setState({didHydrate: true})
+    this.setState({ didHydrate: true });
   }
 
   saveStateToStorage(allowNewKey = true) {
-    if(store.get("rss_cleared")){
+    if (store.get("rss_cleared")) {
       store.set("rss_cleared", false);
-      return
+      return;
     }
 
     let prefix = "";
@@ -105,21 +137,31 @@ export default class SimpleStorage extends Component {
       return false;
     }
 
+    const isStatefulParent = checkStatefulParent(parent);
+    const parentObj = isStatefulParent ? parent.state : parent;
 
-    // loop through all of the parent's state
-    for (let key in parent.state) {
-      // save item to storage if not on the blacklist
-      let prefixWithKey = `${prefix}_${key}`;
+    Object.entries(parentObj).forEach(([key, item]) => {
+      // if hook value is being set, it's the first array index
+      const value = isStatefulParent ? item : item[0];
       if (blacklist.indexOf(key) < 0 && allowNewKey) {
-        store.set(prefixWithKey, parent.state[key]);
+        store.set(`${prefix}_${key}`, value);
       }
-    }
+    });
   }
 
   render() {
     return null;
   }
 }
+
+SimpleStorage.propTypes = {
+  /**
+   * Stateful Component: simply pass in `this`.
+   * Hooks: construct a {@link HooksParent}
+   */
+  parent: PropTypes.object.isRequired,
+  // TODO: add more proptypes
+};
 
 function _testStorage() {
   const test = "test";

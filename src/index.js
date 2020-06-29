@@ -76,9 +76,7 @@ export default class SimpleStorage extends Component {
 
         // update parent's state with the result
         // store.js handles parsing
-				if (name in parent.state) {
-				  parent.setState({ [name]: value });
-				}
+        parent.setState({ [name]: value });
       }
     });
 

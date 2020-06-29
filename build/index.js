@@ -314,9 +314,7 @@ var SimpleStorage = function (_Component) {
 
           // update parent's state with the result
           // store.js handles parsing
-          if (name in parent.state) {
-            parent.setState(_defineProperty({}, name, value));
-          }
+          parent.setState(_defineProperty({}, name, value));
         }
       });
 
